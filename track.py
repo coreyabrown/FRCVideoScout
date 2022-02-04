@@ -1,5 +1,6 @@
 import argparse
-from cv2 import contourArea
+from statistics import median
+from cv2 import contourArea, mean
 import imutils
 import cv2
 
@@ -42,13 +43,13 @@ while True:
         mask = cv2.dilate(mask, None, iterations=2)
 
         # Find contours in the mask
-        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cntrs = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         # cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-        cnts = imutils.grab_contours(cnts)
+        cntrs = imutils.grab_contours(cntrs)
 
         # Only process frame if at least one contour was found
-        if len(cnts) > 0:
-            c = max(cnts, key=cv2.contourArea)
+        if len(cntrs) > 0:
+            c = max(cntrs, key=cv2.contourArea)
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             M = cv2.moments(c)
             (cX, cY) = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
